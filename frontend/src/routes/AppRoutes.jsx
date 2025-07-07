@@ -10,7 +10,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/ad-manager" element={<AdList />} />
-      <Route path="/view-user" element={<AdView />} />
+      <Route path="/view-user/:id" element={<AdView />} />
     </Routes>
   );
 }

@@ -2,16 +2,19 @@ import { FaCheckCircle, FaEdit } from "react-icons/fa";
 import campaign from "../../Data/campaignsData";
 import { use, useEffect } from "react";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
+import { useNavigate } from "react-router-dom";
 
 const AdView = () => {
   const user = {
     name: "John Doe",
     email: "jonedoe123@gmail.com"
   };
+  const navigate = useNavigate();
   const { setBreadcrumb } = useBreadcrumb();
   useEffect(() => {
     setBreadcrumb("Ad Manager > view");
   }, [setBreadcrumb]);
+
   return (
     <div className="p-9 max-w-8xl mx-auto bg-white shadow-md rounded-lg">
       <div className="flex items-center space-x-4 border-b pb-4 mb-6">
@@ -78,7 +81,10 @@ const AdView = () => {
       </div>
 
       <div className="flex flex-wrap gap-4 mt-10 justify-end">
-        <button className="flex items-center gap-2 bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-lg">
+        <button
+          onClick={() => navigate("/approve-campaign")}
+          className="flex items-center gap-2 bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-lg"
+        >
           <FaCheckCircle />
           Approve Campaign
         </button>

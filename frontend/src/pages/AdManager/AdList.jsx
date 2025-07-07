@@ -64,7 +64,9 @@ const AdList = () => {
                 <td className="p-4">{campaign.email}</td>
                 <td className="p-4 flex gap-3">
                   <button className="p-2 bg-orange-100 text-orange-500 rounded">
-                    <FaEye onClick={() => Navigate("/view-user")} />
+                    <FaEye
+                      onClick={() => Navigate(`/view-user/${campaign.id}`)}
+                    />
                   </button>
                   <button className="p-2 bg-blue-100 text-blue-600 rounded">
                     <FaEdit />
@@ -78,6 +80,7 @@ const AdList = () => {
           </tbody>
         </table>
       </div>
+      <Outlet />
     </div>
   );
 };
