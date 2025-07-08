@@ -1,1 +1,23 @@
-Bharat Teleclinic Admin Dashboard is a modern React-based application built using Vite, Tailwind CSS, and React Router. It provides a responsive interface with a sidebar, dynamic header, and modular components to manage ads, doctors, clinics, and other healthcare operations efficiently. The project supports full CRUD operations for ad campaigns and offers a clean, intuitive UI for streamlined navigation and management.
+# Bharat Teleclinic Admin Dashboard
+
+A modern admin dashboard built with **React**, **Vite**, **Tailwind CSS**, and **React Router**. This project is designed to manage various administrative functionalities of Bharat Teleclinic, including ad campaigns, doctors, clinics, prescriptions, and more.
+
+## 🔧 Features
+
+- 🧭 Sidebar navigation with active state
+- 📊 Dashboard overview
+- 📢 Ad Manager (CRUD operations)
+- 👨‍⚕️ Doctor and Pharmacist Management
+- 🧾 Prescription, Payment, and Audit Trail
+- 🔍 Search and Notification icons in the header
+- ⚡ Built with Vite for lightning-fast development
+- 🎨 Tailwind CSS for responsive design
+
+## 🚀 Tech Stack
+
+- **React**
+- **Vite**
+- **Tailwind CSS**
+- **React Router DOM**
+- **React Icons**
+
