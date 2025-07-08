@@ -15,9 +15,11 @@ import {
 } from "react-icons/fa";
 
 import { useNavigate, useLocation } from "react-router-dom";
+import { useBreadcrumb } from "../context/BreadcrumbContext";
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { breadcrumb, setBreadcrumb } = useBreadcrumb();
 
   return (
     <aside className="w-64 min-h-screen bg-white border-r px-4 py-6">
@@ -33,70 +35,103 @@ const Sidebar = () => {
         <NavItem
           icon={<FaHome />}
           label="Dashboard"
-          onClick={() => navigate("/dashboard")}
-          // active={location.pathname === "/dashboard"}
+          onClick={() => {
+            setBreadcrumb("Dashboard");
+            navigate("/dashboard");
+          }}
+          active={breadcrumb === "Dashboard"}
         />
         <NavItem
           icon={<FaPhone />}
           label="Instant Call"
-          onClick={() => navigate("/instant-call")}
-          // active={location.pathname === "/instant-call"}
+          onClick={() => {
+            setBreadcrumb("Instant Call");
+            navigate("/instant-call");
+          }}
+          active={breadcrumb === "Instant Call"}
         />
         <NavItem
           icon={<FaFilePrescription />}
           label="Prescription"
-          onClick={() => navigate("prescription")}
-          // active={location.pathname === "/prescription"}
+          onClick={() => {
+            setBreadcrumb("Prescription");
+            navigate("/prescription");
+          }}
+          active={breadcrumb === "Prescription"}
         />
         <NavItem
           icon={<FaMoneyCheckAlt />}
           label="Payment"
-          onClick={() => navigate("payment")}
-          // active={location.pathname === "/payment"}
+          onClick={() => {
+            setBreadcrumb("Payment");
+            navigate("/payment");
+          }}
+          active={breadcrumb === "Payment"}
         />
         <NavItem
           icon={<FaUserMd />}
           label="Doctor"
-          onClick={() => navigate("doctor")}
-          // active={location.pathname === "/doctor"}
+          onClick={() => {
+            setBreadcrumb("Doctor");
+            navigate("/doctor");
+          }}
+          active={breadcrumb === "Doctor"}
         />
         <NavItem
           icon={<FaPills />}
           label="Pharmacist"
-          onClick={() => navigate("pharmacist")}
-          // active={location.pathname === "/pharmacist"}
+          onClick={() => {
+            setBreadcrumb("Pharmacist");
+            navigate("/pharmacist");
+          }}
+          active={breadcrumb === "Pharmacist"}
         />
 
         <NavItem
           icon={<FaBullhorn />}
           label="Ad Manager"
-          onClick={() => navigate("/ad-manager")}
-          // active={location.pathname === "/ad-manager"}
+          onClick={() => {
+            setBreadcrumb("Ad Manager");
+            navigate("/ad-manager");
+          }}
+          active={breadcrumb === "Ad Manager"}
         />
 
         <NavItem
           icon={<FaClinicMedical />}
           label="Pharma"
-          onClick={() => navigate("/pharma")}
-          // active={location.pathname === "/pharma"}
+          onClick={() => {
+            setBreadcrumb("Pharma");
+            navigate("/pharma");
+          }}
+          active={breadcrumb === "Pharma"}
         />
         <NavItem
           icon={<FaUsers />}
           label="Clinic"
-          onClick={() => navigate("/clinic")}
-          // active={location.pathname === "/clinic"}
+          onClick={() => {
+            setBreadcrumb("Clinic");
+            navigate("/clinic");
+          }}
+          active={breadcrumb === "Clinic"}
         />
         <NavItem
           icon={<FaClipboardList />}
           label="Referral"
-          onClick={() => navigate("/referral")}
-          // active={location.pathname === "/referral"}
+          onClick={() => {
+            setBreadcrumb("Referral");
+            navigate("/referral");
+          }}
+          active={breadcrumb === " Referral"}
         />
         <NavItem
           icon={<FaClipboardList />}
           label="Audit Trail"
-          onClick={() => navigate("/audit-trail")}
-          // active={location.pathname === "/audit-trail"}
+          onClick={() => {
+            setBreadcrumb("Audit Trail");
+            navigate("/audit-trail");
+          }}
+          active={breadcrumb === "Audit Trail"}
         />
 
         <span className="font-semibold text-xs text-gray-500 mt-6 mb-1">
@@ -115,12 +150,14 @@ const Sidebar = () => {
 };
 
 const NavItem = ({ icon, label, active, onClick }) => {
-  const baseClasses = `flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 cursor-pointer`;
-  const activeClasses = active ? "bg-blue-100 text-blue-700 font-semibold" : "";
+  const baseClasses = `flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-colors`;
+  const activeClasses = active
+    ? "bg-blue-900 text-white font-semibold"
+    : "hover:bg-gray-100 text-gray-700";
 
   return (
     <div onClick={onClick} className={`${baseClasses} ${activeClasses}`}>
-      {icon}
+      <div className="text-lg">{icon}</div>
       {label}
     </div>
   );

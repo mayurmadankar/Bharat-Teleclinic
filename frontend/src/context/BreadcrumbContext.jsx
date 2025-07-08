@@ -5,7 +5,7 @@ const BreadcrumbContext = createContext();
 export const useBreadcrumb = () => useContext(BreadcrumbContext);
 
 export const BreadcrumbProvider = ({ children }) => {
-  const [breadcrumb, setBreadcrumb] = useState("Ad Manager");
+  const [breadcrumb, setBreadcrumb] = useState("");
 
   return (
     <BreadcrumbContext.Provider value={{ breadcrumb, setBreadcrumb }}>

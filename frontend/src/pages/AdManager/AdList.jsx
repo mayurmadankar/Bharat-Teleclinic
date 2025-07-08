@@ -10,10 +10,38 @@ const AdList = () => {
   const [activeTab, setActiveTab] = useState("New");
   const Navigate = useNavigate();
   const { setBreadcrumb } = useBreadcrumb();
+  const [newCampaigns, setNewCampaigns] = useState(campaignsData);
+  const [approvedCampaigns, setApprovedCampaigns] = useState([]);
 
   useEffect(() => {
     setBreadcrumb("Ad Manager");
   }, []);
+
+  const handleApprove = (campaignId) => {
+    const campaignToApprove = newCampaigns.find((c) => c.id === campaignId);
+    if (campaignToApprove) {
+      setApprovedCampaigns([...approvedCampaigns, campaignToApprove]);
+      setNewCampaigns(newCampaigns.filter((c) => c.id !== campaignId));
+      setActiveTab("Approved");
+    }
+  };
+
+  const handleDelete = (campaignId) => {
+    setApprovedCampaigns(approvedCampaigns.filter((c) => c.id !== campaignId));
+  };
+
+  const getDisplayedCampaigns = () => {
+    switch (activeTab) {
+      case "New":
+        return newCampaigns;
+      case "Approved":
+        return approvedCampaigns;
+      default:
+        return [];
+    }
+  };
+
+  const campaigns = getDisplayedCampaigns();
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -63,24 +91,40 @@ const AdList = () => {
                 <td className="p-4">{campaign.manager}</td>
                 <td className="p-4">{campaign.email}</td>
                 <td className="p-4 flex gap-3">
-                  <button className="p-2 bg-orange-100 text-orange-500 rounded">
-                    <FaEye
-                      onClick={() => Navigate(`/view-user/${campaign.id}`)}
-                    />
-                  </button>
-                  <button className="p-2 bg-blue-100 text-blue-600 rounded">
-                    <FaEdit />
-                  </button>
-                  <button className="p-2 bg-yellow-100 text-yellow-600 rounded">
-                    <FaTrash />
-                  </button>
+                  {activeTab === "Approved" ? (
+                    <>
+                      <button
+                        className="p-2 bg-orange-100 text-orange-500 rounded"
+                        onClick={() => Navigate("/view-user")}
+                      >
+                        <FaEye />
+                      </button>
+                      <button
+                        className="p-2 bg-yellow-100 text-yellow-600 rounded"
+                        onClick={() => handleDelete(campaign.id)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button className="p-2 bg-orange-100 text-orange-500 rounded">
+                        <FaEye onClick={() => Navigate("/view-user")} />
+                      </button>
+                      <button className="p-2 bg-blue-100 text-blue-600 rounded">
+                        <FaEdit />
+                      </button>
+                      <button className="p-2 bg-yellow-100 text-yellow-600 rounded">
+                        <FaTrash />
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <Outlet />
     </div>
   );
 };

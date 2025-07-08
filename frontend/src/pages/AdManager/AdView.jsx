@@ -1,6 +1,6 @@
 import { FaCheckCircle, FaEdit } from "react-icons/fa";
 import campaign from "../../Data/campaignsData";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +14,8 @@ const AdView = () => {
   useEffect(() => {
     setBreadcrumb("Ad Manager > view");
   }, [setBreadcrumb]);
+
+  console.log(campaign.basicDetails.firstName);
 
   return (
     <div className="p-9 max-w-8xl mx-auto bg-white shadow-md rounded-lg">
