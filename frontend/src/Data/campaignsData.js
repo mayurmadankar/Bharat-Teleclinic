@@ -1,15 +1,15 @@
 const campaign = {
   basicDetails: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: ""
+    firstName: "Mayur",
+    lastName: "Madankar",
+    email: "madankarmayur5@gmailcom",
+    phone: "7058677899"
   },
   creativeUpload: {
-    firstName: "",
-    lastName: "",
-    emails: ["", "", ""],
-    phone: ""
+    firstName: "Manthan",
+    lastName: "mafia",
+    emails: "mafiamayur@gmail.com",
+    phone: "1245678901"
   },
   schedule: {
     startDate: "",

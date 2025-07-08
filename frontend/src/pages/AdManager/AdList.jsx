@@ -1,47 +1,30 @@
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import campaignsData from "../../Data/campaignsList";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
+import { useCampaigns } from "../../context/CampaignContext";
 
 const tabs = ["New", "Approved", "Live", "Completed"];
 
 const AdList = () => {
-  const [activeTab, setActiveTab] = useState("New");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "New");
+
+  useEffect(() => {
+    setSearchParams({ tab: activeTab });
+  }, [activeTab]);
   const Navigate = useNavigate();
   const { setBreadcrumb } = useBreadcrumb();
-  const [newCampaigns, setNewCampaigns] = useState(campaignsData);
-  const [approvedCampaigns, setApprovedCampaigns] = useState([]);
+  const { newCampaigns, deleteApprovedCampaign } = useCampaigns();
+
+  useEffect(() => {
+    setSearchParams({ tab: activeTab });
+  }, [activeTab]);
 
   useEffect(() => {
     setBreadcrumb("Ad Manager");
   }, []);
-
-  const handleApprove = (campaignId) => {
-    const campaignToApprove = newCampaigns.find((c) => c.id === campaignId);
-    if (campaignToApprove) {
-      setApprovedCampaigns([...approvedCampaigns, campaignToApprove]);
-      setNewCampaigns(newCampaigns.filter((c) => c.id !== campaignId));
-      setActiveTab("Approved");
-    }
-  };
-
-  const handleDelete = (campaignId) => {
-    setApprovedCampaigns(approvedCampaigns.filter((c) => c.id !== campaignId));
-  };
-
-  const getDisplayedCampaigns = () => {
-    switch (activeTab) {
-      case "New":
-        return newCampaigns;
-      case "Approved":
-        return approvedCampaigns;
-      default:
-        return [];
-    }
-  };
-
-  const campaigns = getDisplayedCampaigns();
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -95,7 +78,7 @@ const AdList = () => {
                     <>
                       <button
                         className="p-2 bg-orange-100 text-orange-500 rounded"
-                        onClick={() => Navigate("/view-user")}
+                        onClick={() => Navigate("/view-user?tab=" + activeTab)}
                       >
                         <FaEye />
                       </button>
@@ -109,9 +92,16 @@ const AdList = () => {
                   ) : (
                     <>
                       <button className="p-2 bg-orange-100 text-orange-500 rounded">
-                        <FaEye onClick={() => Navigate("/view-user")} />
+                        <FaEye
+                          onClick={() =>
+                            Navigate("/view-user?tab=" + activeTab)
+                          }
+                        />
                       </button>
-                      <button className="p-2 bg-blue-100 text-blue-600 rounded">
+                      <button
+                        onClick={() => Navigate("/edit-form")}
+                        className="p-2 bg-blue-100 text-blue-600 rounded"
+                      >
                         <FaEdit />
                       </button>
                       <button className="p-2 bg-yellow-100 text-yellow-600 rounded">

@@ -2,20 +2,29 @@ import { FaCheckCircle, FaEdit } from "react-icons/fa";
 import campaign from "../../Data/campaignsData";
 import { useEffect } from "react";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useCampaigns } from "../../context/CampaignContext";
 
 const AdView = () => {
   const user = {
     name: "John Doe",
     email: "jonedoe123@gmail.com"
   };
+
   const navigate = useNavigate();
   const { setBreadcrumb } = useBreadcrumb();
+  const { approveCampaign } = useCampaigns();
+  const [searchParams] = useSearchParams();
+  const tab = searchParams.get("tab") || "New";
+
   useEffect(() => {
     setBreadcrumb("Ad Manager > view");
   }, [setBreadcrumb]);
 
-  console.log(campaign.basicDetails.firstName);
+  const handleApprove = () => {
+    approveCampaign(campaign.id);
+    navigate("/ad-manager?tab=Approved");
+  };
 
   return (
     <div className="p-9 max-w-8xl mx-auto bg-white shadow-md rounded-lg">
@@ -82,19 +91,24 @@ const AdView = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 mt-10 justify-end">
-        <button
-          onClick={() => navigate("/approve-campaign")}
-          className="flex items-center gap-2 bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-lg"
-        >
-          <FaCheckCircle />
-          Approve Campaign
-        </button>
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-          <FaEdit />
-          Edit Campaign
-        </button>
-      </div>
+      {tab === "New" && (
+        <div className="flex flex-wrap gap-4 mt-10 justify-end">
+          <button
+            onClick={handleApprove}
+            className="flex items-center gap-2 bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-lg"
+          >
+            <FaCheckCircle />
+            Approve Campaign
+          </button>
+          <button
+            onClick={() => navigate("/edit-form")}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          >
+            <FaEdit />
+            Edit Campaign
+          </button>
+        </div>
+      )}
     </div>
   );
 };

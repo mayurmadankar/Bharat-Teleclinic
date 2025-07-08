@@ -4,11 +4,14 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { BreadcrumbProvider } from "./context/BreadcrumbContext.jsx";
+import { CampaignProvider } from "./context/CampaignContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <BreadcrumbProvider>
-      <App />
+      <CampaignProvider>
+        <App />
+      </CampaignProvider>
     </BreadcrumbProvider>
   </BrowserRouter>
 );

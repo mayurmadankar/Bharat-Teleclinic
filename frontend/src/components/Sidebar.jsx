@@ -122,7 +122,7 @@ const Sidebar = () => {
             setBreadcrumb("Referral");
             navigate("/referral");
           }}
-          active={breadcrumb === " Referral"}
+          active={breadcrumb === "Referral"}
         />
         <NavItem
           icon={<FaClipboardList />}
