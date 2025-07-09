@@ -21,4 +21,6 @@ A modern admin dashboard built with **React**, **Vite**, **Tailwind CSS**, and *
 - **React Router DOM**
 - **React Icons**
 
-## Live link :- bharat-teleclinic.netlify.app/
+## Live Demo
+
+[Click here](https://bharat-teleclinic.netlify.app/)
