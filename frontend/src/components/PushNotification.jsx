@@ -35,40 +35,13 @@ const PushNotification = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!state.selectedApps.doctor && !state.selectedApps.patient) {
-      alert("Select at least one application.");
-      return;
-    }
-    if (!state.title.trim()) {
-      alert("Title is required.");
-      return;
-    }
-    if (!state.message.trim()) {
-      alert("Message is required.");
-      return;
-    }
-    if (
-      state.redirectUrl.trim() &&
-      !/^https?:\/\//i.test(state.redirectUrl.trim())
-    ) {
-      alert("Redirect URL must start with http:// or https://");
-      return;
-    }
-    if (state.scheduleType === "later" && !state.scheduledDateTime) {
-      alert("Please choose date & time.");
-      return;
-    }
-
     dispatch(submitPushNotification())
       .unwrap()
       .then((data) => {
         if (onSuccess) onSuccess(data);
-        // optional reset after success
         dispatch(resetForm());
-      })
-      .catch(() => {
-        /* error handled in slice */
       });
+    console.log("Form submitted with data:");
   };
 
   const handleCancel = () => {
@@ -87,25 +60,30 @@ const PushNotification = () => {
           <label className="block text-gray-600 mb-2 font-medium">
             Choose the Application
           </label>
-          <div className="flex gap-6">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={state.selectedApps.doctor}
-                onChange={() => dispatch(toggleDoctor())}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
-              />
+          <div className="flex gap-32">
+            {/* Doctor Application Button */}
+            <div
+              onClick={() => dispatch(toggleDoctor())}
+              className={`px-4 py-2 rounded-md border cursor-pointer w-5/12 ${
+                state.selectedApps.doctor
+                  ? " text-gray border-blue-600"
+                  : "bg-white text-gray-700 border-gray-300"
+              }`}
+            >
               Doctor Application
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={state.selectedApps.patient}
-                onChange={() => dispatch(togglePatient())}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
-              />
+            </div>
+
+            {/* Patient Application Button */}
+            <div
+              onClick={() => dispatch(togglePatient())}
+              className={`px-4 py-2 rounded-md border cursor-pointer w-5/12 ${
+                state.selectedApps.patient
+                  ? " text-gray border-blue-600"
+                  : "bg-white text-gray-700 border-gray-300"
+              }`}
+            >
               Patient Application
-            </label>
+            </div>
           </div>
         </div>
 
