@@ -10,13 +10,8 @@ const tabs = ["New", "Approved", "Live", "Completed"];
 const AdList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "New");
-
-  useEffect(() => {
-    setSearchParams({ tab: activeTab });
-  }, [activeTab]);
   const Navigate = useNavigate();
   const { setBreadcrumb } = useBreadcrumb();
-  const { newCampaigns, deleteApprovedCampaign } = useCampaigns();
 
   useEffect(() => {
     setSearchParams({ tab: activeTab });
