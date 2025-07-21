@@ -1,16 +1,15 @@
 import { act, useEffect, useState } from "react";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import campaignsData from "../../Data/campaignsList";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useBreadcrumb } from "../../context/BreadcrumbContext";
-import { useCampaigns } from "../../context/CampaignContext";
 
 const tabs = ["New", "Approved", "Live", "Completed"];
 
 const AdList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "New");
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const { setBreadcrumb } = useBreadcrumb();
 
   useEffect(() => {
@@ -23,21 +22,29 @@ const AdList = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="flex space-x-22 border-b pb-2 mb-6 text-xl text-gray-700">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            className={`pb-2 border-b-2 ${
-              activeTab === tab
-                ? "border-blue-500 font-semibold text-blue-700"
-                : "border-transparent"
-            }`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab} {tab === "New"} {tab === "Approved"} {tab === "Live"}{" "}
-            {tab === "Completed"}
-          </button>
-        ))}
+      <div className="flex justify-between items-center border-b pb-2 mb-6 text-xl text-gray-700">
+        <div className="flex space-x-8">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`pb-2 border-b-2 ${
+                activeTab === tab
+                  ? "border-blue-500 font-semibold text-blue-700"
+                  : "border-transparent"
+              }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+        <div
+          onClick={() => navigate("/push-notification")}
+          className="flex items-center bg-blue-900 text-white rounded-md cursor-pointer gap-3 px-3 py-2 text-sm"
+        >
+          <FaPlus />
+          <p>Create Push Notification</p>
+        </div>
       </div>
 
       <div className="bg-white rounded shadow overflow-x-auto">
@@ -73,7 +80,7 @@ const AdList = () => {
                     <>
                       <button
                         className="p-2 bg-orange-100 text-orange-500 rounded"
-                        onClick={() => Navigate("/view-user?tab=" + activeTab)}
+                        onClick={() => navigate("/view-user?tab=" + activeTab)}
                       >
                         <FaEye />
                       </button>
@@ -89,12 +96,12 @@ const AdList = () => {
                       <button className="p-2 bg-orange-100 text-orange-500 rounded">
                         <FaEye
                           onClick={() =>
-                            Navigate("/view-user?tab=" + activeTab)
+                            navigate("/view-user?tab=" + activeTab)
                           }
                         />
                       </button>
                       <button
-                        onClick={() => Navigate("/edit-form")}
+                        onClick={() => navigate("/edit-form")}
                         className="p-2 bg-blue-100 text-blue-600 rounded"
                       >
                         <FaEdit />

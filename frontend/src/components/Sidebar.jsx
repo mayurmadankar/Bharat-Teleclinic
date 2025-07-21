@@ -138,7 +138,14 @@ const Sidebar = () => {
           SYSTEM
         </span>
         <NavItem icon={<FaQuestionCircle />} label="Help Center" />
-        <NavItem icon={<FaCog />} label="Settings" />
+        <NavItem
+          icon={<FaCog />}
+          label="Settings"
+          onClick={() => {
+            setBreadcrumb("Settings");
+          }}
+          active={breadcrumb === "Settings"}
+        />
       </nav>
 
       <button className="flex items-center gap-2 text-red-500 mt-10">

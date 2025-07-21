@@ -12,6 +12,7 @@ import Pharma from "../pages/Pharma/Pharma";
 import Pharmacist from "../pages/Pharmacist/Pharmacist";
 import Prescription from "../pages/Prescription/Prescription";
 import Referral from "../pages/Referral/Referal";
+import PushNotification from "../components/PushNotification";
 
 export default function AppRoutes() {
   return (
@@ -30,6 +31,7 @@ export default function AppRoutes() {
       <Route path="/referral" element={<Referral />} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/prescription" element={<Prescription />} />
+      <Route path="/push-notification" element={<PushNotification />} />
     </Routes>
   );
 }
