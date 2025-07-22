@@ -1,4 +1,3 @@
-import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,8 +6,8 @@ import {
   selectPushStatus,
   selectPushError,
   selectPushResponse,
-  toggleDoctor,
-  togglePatient,
+  setDoctorSelected,
+  setPatientSelected,
   setTitle,
   setMessage,
   setRedirectUrl,
@@ -16,10 +15,15 @@ import {
   setScheduledDateTime,
   resetForm,
   submitPushNotification
-} from "../redux/pushNotofication";
+} from "../redux/pushNotification";
+import { useState } from "react";
 
 const PushNotification = () => {
   const dispatch = useDispatch();
+  const [titleError, setTitleError] = useState("");
+  const [messageError, setMessageError] = useState("");
+  const [urlError, setUrlError] = useState("");
+
   const state = useSelector(selectPushNotification);
   const status = useSelector(selectPushStatus);
   const error = useSelector(selectPushError);
@@ -32,58 +36,114 @@ const PushNotification = () => {
   const submitting = status === "loading";
   const submitSuccess = status === "succeeded";
 
+  const makePayload = () => {
+    const applications = [];
+    if (state.selectedApps.doctor) applications.push("doctor");
+    if (state.selectedApps.patient) applications.push("patient");
+    return {
+      applications,
+      title: state.title.trim(),
+      message: state.message.trim(),
+      redirectUrl: state.redirectUrl.trim() || null,
+      scheduleType: state.scheduleType,
+      scheduledAt:
+        state.scheduleType === "later" && state.scheduledDateTime
+          ? state.scheduledDateTime
+          : null
+    };
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    let hasError = false;
+
+    // Title validation
+    if (!state.title.trim()) {
+      setTitleError("Title is required");
+      hasError = true;
+    } else setTitleError("");
+
+    // Message validation
+    if (!state.message.trim()) {
+      setMessageError("Message is required");
+      hasError = true;
+    } else setMessageError("");
+
+    // Redirect URL validation (if entered, must start with http/https)
+    if (state.redirectUrl.trim() && !/^https?:\/\//i.test(state.redirectUrl)) {
+      setUrlError("Redirect URL must start with http:// or https://");
+      hasError = true;
+    } else setUrlError("");
+
+    if (hasError) return;
+
+    const payload = makePayload();
+
     dispatch(submitPushNotification())
       .unwrap()
-      .then((data) => {
-        if (onSuccess) onSuccess(data);
+      .then(() => {
         dispatch(resetForm());
       });
-    console.log("Form submitted with data:");
+    console.log("Form submitted with data:", payload);
   };
 
   const handleCancel = () => {
     dispatch(resetForm());
-    if (onCancel) onCancel();
   };
 
   return (
-    <div className="flex-1 p-6 bg-gray-50 min-h-screen">
+    <div className="flex-1 p-6  min-h-screen">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-lg shadow-md p-6 space-y-6 w-full"
+        className=" rounded-lg p-6 space-y-6 w-full"
       >
         {/* Application */}
         <div>
           <label className="block text-gray-600 mb-2 font-medium">
             Choose the Application
           </label>
-          <div className="flex gap-32">
-            {/* Doctor Application Button */}
-            <div
-              onClick={() => dispatch(toggleDoctor())}
-              className={`px-4 py-2 rounded-md border cursor-pointer w-5/12 ${
-                state.selectedApps.doctor
-                  ? " text-gray border-blue-600"
-                  : "bg-white text-gray-700 border-gray-300"
-              }`}
-            >
-              Doctor Application
-            </div>
 
-            {/* Patient Application Button */}
-            <div
-              onClick={() => dispatch(togglePatient())}
-              className={`px-4 py-2 rounded-md border cursor-pointer w-5/12 ${
-                state.selectedApps.patient
-                  ? " text-gray border-blue-600"
-                  : "bg-white text-gray-700 border-gray-300"
-              }`}
-            >
-              Patient Application
-            </div>
+          <div className="flex gap-5 w-full">
+            {/* Doctor Application */}
+            <label htmlFor="doctorApp" className="flex-1 cursor-pointer">
+              <div
+                className={
+                  " flex px-4 py-2 rounded-md border items-center justify-between text-sm text-gray-600"
+                }
+              >
+                <p className="text-gray-500">Doctor Application</p>
+                <input
+                  type="radio"
+                  id="doctorApp"
+                  name="application"
+                  value="doctor"
+                  checked={state.selectedApps.doctor}
+                  onChange={() => dispatch(setDoctorSelected())}
+                  className="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                />
+              </div>
+            </label>
+
+            {/* Patient Application */}
+            <label htmlFor="patientApp" className="flex-1 cursor-pointer">
+              <div
+                className={
+                  " flex px-4 py-2 rounded-md border items-center justify-between text-sm text-gray-600"
+                }
+              >
+                <p className="text-gray-500">Patient Application</p>
+                <input
+                  type="radio"
+                  id="patientApp"
+                  name="application"
+                  value="patient"
+                  checked={state.selectedApps.patient}
+                  onChange={() => dispatch(setPatientSelected())}
+                  className="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                />
+              </div>
+            </label>
           </div>
         </div>
 
@@ -94,27 +154,43 @@ const PushNotification = () => {
             type="text"
             placeholder="Enter the Title"
             value={state.title}
-            onChange={(e) => dispatch(setTitle(e.target.value))}
-            className="border border-gray-400 px-4 py-2 rounded-md w-11/12 h-[40px] focus:outline-blue-500"
+            onChange={(e) => {
+              dispatch(setTitle(e.target.value));
+              if (titleError && e.target.value.trim()) setTitleError("");
+            }}
+            className={`border px-4 py-2 rounded-md w-full h-[40px] focus:outline-blue-500 ${
+              titleError ? "border-red-500" : "border-gray-400"
+            }`}
           />
+          {titleError && (
+            <p className="text-red-500 text-sm mt-1">{titleError}</p>
+          )}
         </div>
 
         {/* Message */}
-        <div>
+        <div className="mt-4">
           <label className="block text-gray-600 mb-2 font-medium">
             Message
           </label>
           <textarea
             placeholder="Enter the Message"
             value={state.message}
-            onChange={(e) => dispatch(setMessage(e.target.value))}
+            onChange={(e) => {
+              dispatch(setMessage(e.target.value));
+              if (messageError && e.target.value.trim()) setMessageError("");
+            }}
             rows={3}
-            className="border border-gray-400 px-4 py-2 rounded-md w-11/12 focus:outline-blue-500 resize-y"
+            className={`border px-4 py-2 rounded-md w-full focus:outline-blue-500 resize-y ${
+              messageError ? "border-red-500" : "border-gray-400"
+            }`}
           />
+          {messageError && (
+            <p className="text-red-500 text-sm mt-1">{messageError}</p>
+          )}
         </div>
 
         {/* Redirect URL */}
-        <div>
+        <div className="mt-4">
           <label className="block text-gray-600 mb-2 font-medium">
             Redirect URL
           </label>
@@ -122,9 +198,16 @@ const PushNotification = () => {
             type="text"
             placeholder="Enter the Redirect URL"
             value={state.redirectUrl}
-            onChange={(e) => dispatch(setRedirectUrl(e.target.value))}
-            className="border border-gray-400 px-4 py-2 rounded-md w-11/12 h-[40px] focus:outline-blue-500"
+            onChange={(e) => {
+              dispatch(setRedirectUrl(e.target.value));
+              if (urlError && /^https?:\/\//i.test(e.target.value))
+                setUrlError("");
+            }}
+            className={`border px-4 py-2 rounded-md w-full h-[40px] focus:outline-blue-500 ${
+              urlError ? "border-red-500" : "border-gray-400"
+            }`}
           />
+          {urlError && <p className="text-red-500 text-sm mt-1">{urlError}</p>}
         </div>
 
         {/* Timing */}
@@ -140,7 +223,7 @@ const PushNotification = () => {
                 value="later"
                 checked={state.scheduleType === "later"}
                 onChange={() => dispatch(setScheduleType("later"))}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                className="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
               />
               Schedule Later
             </label>
@@ -151,7 +234,7 @@ const PushNotification = () => {
                 value="now"
                 checked={state.scheduleType === "now"}
                 onChange={() => dispatch(setScheduleType("now"))}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                className="w-4 h-4 mx-2 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
               />
               Send Now
             </label>
@@ -166,7 +249,9 @@ const PushNotification = () => {
             </label>
             <DatePicker
               selected={dateForPicker}
-              onChange={(date) => dispatch(setScheduledDateTime(date))}
+              onChange={(date) =>
+                dispatch(setScheduledDateTime(date ? date.toISOString() : null))
+              }
               showTimeSelect
               timeFormat="HH:mm"
               timeIntervals={15}

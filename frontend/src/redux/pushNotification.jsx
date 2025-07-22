@@ -15,13 +15,17 @@ const initialState = {
 
 export const submitPushNotification = createAsyncThunk(
   "pushNotification/submit",
-  async (data, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/api/push-notification", data);
-      return response.data;
-    } catch (error) {
+      const { data } = await axios.post(
+        "https://jsonplaceholder.typicode.com/posts",
+        payload
+      );
+      console.log("Overall data", data);
+      return data;
+    } catch (err) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to submit push notification"
+        err.response?.data?.message || "Failed to submit push notification"
       );
     }
   }
@@ -31,28 +35,34 @@ const pushNotificationSlice = createSlice({
   name: "pushNotification",
   initialState,
   reducers: {
-    toggleDoctor(state) {
-      state.selectedApps.doctor = !state.selectedApps.doctor;
+    setDoctorSelected(state) {
+      console.log("Doctor Selected:", state.selectedApps);
+      state.selectedApps = { doctor: true, patient: false };
     },
-    togglePatient(state) {
-      state.selectedApps.patient = !state.selectedApps.patient;
+    setPatientSelected(state) {
+      console.log("Patient Selected:", state.selectedApps);
+      state.selectedApps = { doctor: false, patient: true };
     },
     setTitle(state, action) {
+      console.log("Title:", state.title);
       state.title = action.payload;
     },
     setMessage(state, action) {
+      console.log("Message:", state.message);
       state.message = action.payload;
     },
     setRedirectUrl(state, action) {
       state.redirectUrl = action.payload;
+      console.log("Url:", state.redirectUrl);
     },
     setScheduleType(state, action) {
-      state.scheduleType = action.payload; // 'now' or 'later'
+      console.log("setScheduleTime :", state.scheduleType);
+      state.scheduleType = action.payload;
     },
     setScheduledDateTime(state, action) {
-      // store as ISO string for serializable state
-      const val = action.payload; // Date | string | null
+      const val = action.payload;
       state.scheduledDateTime = val ? new Date(val).toISOString() : null;
+      console.log("Date and Time :", state.scheduledDateTime);
     },
     resetForm(state) {
       state.selectedApps = { doctor: true, patient: false };
@@ -85,8 +95,8 @@ const pushNotificationSlice = createSlice({
 });
 
 export const {
-  toggleDoctor,
-  togglePatient,
+  setDoctorSelected,
+  setPatientSelected,
   setTitle,
   setMessage,
   setRedirectUrl,
