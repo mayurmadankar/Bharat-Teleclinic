@@ -23,4 +23,4 @@ A modern admin dashboard built with **React**, **Vite**, **Tailwind CSS**, and *
 
 ## Live Demo
 
-[Click here](https://bharat-teleclinic.netlify.app/)
+[Click here](bharat-teleclinicx.netlify.app/)
